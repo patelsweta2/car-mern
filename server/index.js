@@ -1,10 +1,10 @@
 const express = require("express");
-const ConnectDB = require("./server/config/db");
-const userRoute = require("./server/router/userRouter");
+const ConnectDB = require("./src/config/db");
+const userRoute = require("./src/router/userRouter");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const carsRouter = require("./server/router/carRouter");
+const carsRouter = require("./src/router/carRouter");
 
 const app = express();
 
@@ -43,7 +43,8 @@ app.use((err, req, res, next) => {
 });
 
 //server setup
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
+const MODE = process.env.NODE_ENV || "production";
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT} in ${MODE}`);
 });
