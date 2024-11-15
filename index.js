@@ -4,6 +4,7 @@ const userRoute = require("./server/router/userRouter");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const carsRouter = require("./server/router/carRouter");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(cors());
 
 //routes
 app.use("/api/users", userRoute);
+app.use("/api/cars", carsRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the API server!");
