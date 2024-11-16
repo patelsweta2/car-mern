@@ -8,7 +8,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-const Home = () => {
+const HomePage = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <MyComponent />
@@ -40,4 +40,4 @@ const MyComponent = () => {
   );
 };
 
-export default Home;
+export default HomePage;
