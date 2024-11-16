@@ -29,9 +29,12 @@ const MyComponent = () => {
     if (token && user) {
       Cookies.set("token", token);
       Cookies.set("user", user);
-      router.push("/dashboard/home");
+      console.log("Token set:", token);
+      setTimeout(() => {
+        router.push("/dashboard/home");
+      }, 500);
     }
-  }, []);
+  }, [searchParams, router]);
   return (
     <div className="h-[100vh] bg-base-300">
       <Navbar />

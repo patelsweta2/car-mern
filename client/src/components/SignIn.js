@@ -1,7 +1,6 @@
 "use client";
 import { actives } from "./Auth";
 import { useEffect, useRef } from "react";
-import ENDPOINTS from "@/network/endPoints";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser, SignInAction } from "@/store/slices/userSlice";
 import { toast } from "react-toastify";
