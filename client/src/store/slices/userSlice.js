@@ -22,24 +22,22 @@ export const { setUser } = userSlice.actions;
 export default userSlice.reducer;
 
 //create action
-export const SignUpAction = (data, params) => {
+export const SignUpAction = (data) => {
   const action = actionFactory();
   action.payload = {
     method: "POST",
     url: ENDPOINTS.SIGNUP,
     data,
-    params,
   };
   return action;
 };
 
-export const SignInAction = (data, params) => {
+export const SignInAction = (data) => {
   const action = actionFactory();
   action.payload = {
     method: "POST",
     url: ENDPOINTS.SIGNIN,
     data,
-    params,
     onSuccess: setUser.type,
   };
   return action;

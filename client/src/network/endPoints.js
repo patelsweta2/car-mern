@@ -1,18 +1,18 @@
 let baseUrl;
 
 if (process.env.NODE_ENV === "development") {
-  baseUrl = "http:/localhost:8000/api";
+  baseUrl = "http://localhost:8000/api";
 }
 
-if (process.env.NODE_ENV === "production") {
-  baseUrl = "http:/localhost:8000/api";
-}
+// if (process.env.NODE_ENV === "production") {
+//   baseUrl = "http://localhost:8000/api";
+// }
 
 export { baseUrl };
 
 const ENDPOINTS = {
-  SIGNIN: `${baseUrl}/users/signup`,
-  SIGNUP: `${baseUrl}/users/login`,
+  SIGNIN: `${baseUrl}/users/login`,
+  SIGNUP: `${baseUrl}/users/signup`,
   LOGOUT: `${baseUrl}/users/logout`,
   ADDCAR: `${baseUrl}/cars/add`,
   GETALLCARS: `${baseUrl}/cars/all`,
