@@ -5,22 +5,27 @@ const path = require("path");
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     // Set the destination folder for saving files
-    cb(null, "./public/temp");
+    const dest = path.resolve(__dirname, "../../public/temp");
+    console.log("Saving file to:", dest);
+    cb(null, dest);
   },
   filename: (req, file, cb) => {
     // Set the filename for the uploaded file
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname)); // Add a unique suffix to the original file name
+    const filename = uniqueSuffix + path.extname(file.originalname);
+    console.log("Saving file as:", filename);
+    cb(null, filename);
   },
 });
 
 const fileFilter = (req, file, cb) => {
   // Allow only jpeg, jpg, and png file types
   const fileTypes = /jpeg|jpg|png/;
-  const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
-  const mimeType = fileTypes.test(file.mimetype);
+  const isValid =
+    fileTypes.test(path.extname(file.originalname).toLowerCase()) &&
+    fileTypes.test(file.mimetype);
 
-  if (extname && mimeType) {
+  if (isValid) {
     cb(null, true);
   } else {
     cb(new Error("Only .jpg and .png files are allowed!"), false);

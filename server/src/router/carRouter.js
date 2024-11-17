@@ -16,6 +16,7 @@ router.post(
   "/add",
   authMiddleware,
   upload.array("images", 10),
+
   addCarController
 );
 

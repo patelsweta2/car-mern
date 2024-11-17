@@ -8,8 +8,13 @@ const addCarController = async (req, res) => {
     const { title, description, tags } = req.body;
     const images = [];
 
-    if (!title || !description || !tags) {
+    if (!title || !description || !tags || !images) {
       throw new CustomError("All fields are required", 400);
+    }
+
+    // Check if user is authenticated
+    if (!req.user || !req.user.userId) {
+      throw new CustomError("User not authenticated", 401);
     }
 
     // Check if the number of images exceeds 10
@@ -21,8 +26,11 @@ const addCarController = async (req, res) => {
     if (req.files && req.files.length > 0) {
       for (let i = 0; i < req.files.length; i++) {
         const result = await uploadToCloudinary(req.files[i].path);
-        if (result) {
+        if (result && result.secure_url) {
           images.push(result.secure_url);
+        } else {
+          console.error("Failed to upload image:", result);
+          // Log if upload fails
         }
       }
     }
@@ -31,9 +39,9 @@ const addCarController = async (req, res) => {
     const newCar = new Car({
       title,
       description,
-      tags,
+      tags: JSON.parse(tags),
       images,
-      user: req.user._id,
+      user: req.user.userId,
     });
 
     // Save the car to the database
@@ -44,14 +52,14 @@ const addCarController = async (req, res) => {
       car: newCar,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Failed to add car" });
+    console.error("Error:", error);
+    res.status(500).json({ message: error.message || "Failed to add car" });
   }
 };
 
 const getAllCarsController = async (req, res) => {
   try {
-    const cars = await Car.find({ user: req.user._id })
+    const cars = await Car.find({ user: req.user.userId })
       .select("title tags images")
       .lean();
 
@@ -82,11 +90,11 @@ const globalSearchCarsController = async (req, res) => {
 
     //search query
     const cars = await Car.find({
-      user: req.user._id,
+      user: req.user.userId,
       $or: [
         { title: { $regex: keyword, $options: "i" } },
         { description: { $regex: keyword, $options: "i" } },
-        { tags: { $eleMatch: { $regex: keyword, $options: "i" } } },
+        { tags: { $elemMatch: { $regex: keyword, $options: "i" } } },
       ],
     })
       .select("title description tags images")
@@ -107,7 +115,7 @@ const getCarDetailsController = async (req, res) => {
     const { carId } = req.params;
     const car = await Car.findOne({
       _id: carId,
-      user: req.user._id,
+      user: req.user.userId,
     })
       .select("title description tags images")
       .lean();
@@ -136,7 +144,7 @@ const updateCarController = async (req, res) => {
     // Find the car by ID and check if it belongs to the logged-in user
     const car = await Car.findOne({
       _id: carId,
-      user: req.user._id,
+      user: req.user.userId,
     });
     if (!car) {
       throw new CustomError("Car not found", 404);
@@ -187,7 +195,7 @@ const deleteCarController = async (req, res) => {
     //find the car by id and check ownership
     const car = await Car.findOne({
       _id: carId,
-      user: req.user._id,
+      user: req.user.userId,
     });
     if (!car) {
       return res
@@ -203,7 +211,7 @@ const deleteCarController = async (req, res) => {
     }
 
     //delete the car from the database
-    await car.remove();
+    await car.deleteOne();
     res.status(200).json({ message: "Car deleted successfully" });
   } catch (error) {
     console.error(error);

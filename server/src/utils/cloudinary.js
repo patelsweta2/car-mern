@@ -1,5 +1,7 @@
 const cloudinary = require("cloudinary").v2;
 const fs = require("fs");
+const dotenv = require("dotenv");
+dotenv.config();
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -25,10 +27,10 @@ const uploadToCloudinary = async (localFilePath) => {
   } catch (error) {
     console.error("Error uploading to Cloudinary:", error.message);
 
-    // Ensure the file is deleted in case of failure
     if (fs.existsSync(localFilePath)) {
       fs.unlinkSync(localFilePath);
     }
+    // Ensure the file is deleted in case of failure
     return null;
   }
 };
